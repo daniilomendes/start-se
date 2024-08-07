@@ -113,7 +113,7 @@
 
                         <div class="row">
                             <div class="col-md">
-                                <form action="#" method="POST">{% csrf_token %}
+                                <form action="{% url "add_metrica" empresa.id %}" method="POST">{% csrf_token %}
                                 <label>Titulo</label>
                                 <input type="text" class="form-control" name="titulo" placeholder="Adicione um texto ...">
                                 
