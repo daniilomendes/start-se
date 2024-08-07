@@ -52,7 +52,7 @@ def cadastrar_empresa(request):
             messages.add_message(request, constants.ERROR, 'Erro interno do servidor.')
             return redirect('/empresarios/cadastrar_empresa')
 
-        messages.add_message(request, constants.SUCCESS, 'Empresa criada com sucesso')
+        messages.add_message(request, constants.SUCCESS, 'Empresa criada com sucesso.')
         return redirect('/empresarios/cadastrar_empresa')
     
 def listar_empresas(request):
@@ -81,11 +81,11 @@ def add_doc(request, id):
     extensao = arquivo.name.split('.')
 
     if extensao[1] != 'pdf':
-        messages.add_message(request, constants.ERROR, "Envie apenas PDF's")
+        messages.add_message(request, constants.ERROR, "Envie apenas PDF's.")
         return redirect(f'/empresarios/empresa/{empresa.id}')
     
     if not arquivo:
-        messages.add_message(request, constants.ERROR, "Envie um arquivo")
+        messages.add_message(request, constants.ERROR, "Envie um arquivo.")
         return redirect(f'/empresarios/empresa/{empresa.id}')
         
     documento = Documento(
@@ -96,5 +96,16 @@ def add_doc(request, id):
 
     documento.save()
 
-    messages.add_message(request, constants.SUCCESS, "Arquivo cadastrado com sucesso")
+    messages.add_message(request, constants.SUCCESS, "Arquivo cadastrado com sucesso.")
     return redirect(f'/empresarios/empresa/{empresa.id}')
+
+def excluir_dc(request, id):
+    documento = Documento.objects.get(id=id)
+    
+    if documento.empresa.user != request.user:
+        messages.add_message(request, constants.ERROR, "Ação não permitida.")
+        return redirect(f'/empresarios/empresa/{empresa.id}')
+
+    documento.delete()
+    messages.add_message(request, constants.SUCCESS, "Arquivo deletado com sucesso.")
+    return redirect(f'/empresarios/empresa/{documento.empresa.id}')
