@@ -45,7 +45,7 @@
                             </div>
                         </td>
                         <td class="linha">{{empresa.status}}</td>
-                        <td class="linha"><a href="#" class="btn btn-indigo-normal">Abrir</a></td>
+                        <td class="linha"><a href="{% url "empresa" empresa.id %}" class="btn btn-indigo-normal">Abrir</a></td>
                     </tr>
                 {% endfor %}
             </tbody>
