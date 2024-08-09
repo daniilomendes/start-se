@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect
 from empresarios.models import Empresas, Documento, Metricas
+from .models import PropostaInvestimento
+from django.contrib import messages
+from django.contrib.messages import constants
 
 def sugestao(request):
     if not request.user.is_authenticated:
@@ -34,3 +37,34 @@ def ver_empresa(request, id):
     documentos = Documento.objects.filter(empresa=empresa)
     metricas = Metricas.objects.filter(empresa=empresa)
     return render(request, 'ver_empresa.html', {'empresa': empresa, 'documentos': documentos, 'metricas': metricas})
+
+def realizar_proposta(request, id):
+    valor = request.POST.get('valor')
+    percentual = request.POST.get('percentual')
+    empresa = Empresas.objects.get(id=id)
+
+    propostas_aceitas = PropostaInvestimento.objects.filter(empresa=empresa).filter(status='PA')
+
+    total = 0
+    for pa in propostas_aceitas:
+        total = total + pa.percentual
+
+    if total + float(percentual) > empresa.percentual_equity:
+        messages.add_message(request, constants.WARNING, 'O percentual solicitado ultrapassa o percentual máximo.')
+        return redirect('/investidores/ver_empresa/{id}')
+    
+    valuation = (100 * int(valor)) / int(percentual)
+
+    if valuation < (int(empresa.valuation / 2)):
+        messages.add_message(request, constants.WARNING, f'Seu valor proposto foi R${valuation} e deve ser no mínimo {empresa.valuation}.')
+        return redirect('/investidores/ver_empresa/{id}')
+    
+    pi = PropostaInvestimento(
+        valor=valor,
+        percentual=percentual,
+        empresa=empresa,
+        investidor=request.user
+    )
+
+    pi.save()
+    return redirect(f'/investidores/assinar_contrato/{pi.id}')

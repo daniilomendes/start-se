@@ -82,7 +82,7 @@
                     <h4>Faça sua proposta</h4>
                     <br><br>
                     <div class="col-md">
-                        <form action="" method="POST"> {% csrf_token %}
+                        <form action="{% url "realizar_proposta" empresa.id %}" method="POST"> {% csrf_token %}
                             <input type="number" name="valor" class="form-control" placeholder="Valor para investir">
                             <br>
                             <input type="submit" class="btn btn-indigo-normal" value="Salvar">
