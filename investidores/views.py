@@ -34,12 +34,18 @@ def sugestao(request):
         return render(request, 'sugestao.html', {'areas': areas, 'empresas': empresas_selecionadas})
 
 def ver_empresa(request, id):
+    if not request.user.is_authenticated:
+        return redirect('/usuarios/logar')
+
     empresa = Empresas.objects.get(id=id)
     documentos = Documento.objects.filter(empresa=empresa)
     metricas = Metricas.objects.filter(empresa=empresa)
     return render(request, 'ver_empresa.html', {'empresa': empresa, 'documentos': documentos, 'metricas': metricas})
 
 def realizar_proposta(request, id):
+    if not request.user.is_authenticated:
+        return redirect('/usuarios/logar')
+    
     valor = request.POST.get('valor')
     percentual = request.POST.get('percentual')
     empresa = Empresas.objects.get(id=id)
@@ -71,6 +77,9 @@ def realizar_proposta(request, id):
     return redirect(f'/investidores/assinar_contrato/{pi.id}')
 
 def assinar_contrato(request, id):
+    if not request.user.is_authenticated:
+        return redirect('/usuarios/logar')
+    
     pi = PropostaInvestimento.objects.get(id=id)
 
     if pi.status != 'AS':
