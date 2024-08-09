@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Empresas, Documento, Metricas
 from django.contrib import messages
 from django.contrib.messages import constants
+from investidores.models import PropostaInvestimento
 
 def cadastrar_empresa(request):
     if not request.user.is_authenticated:
@@ -72,7 +73,10 @@ def empresa(request, id):
     
     if request.method == "GET":
         documentos = Documento.objects.filter(empresa=empresa)
-        return render(request, 'empresa.html', {'empresa': empresa, "documentos": documentos})
+        propostas_investimentos = PropostaInvestimento.objects.filter(empresa=empresa)
+        proposta_investimentos_enviada = propostas_investimentos.filter(status='PE')
+
+        return render(request, 'empresa.html', {'empresa': empresa, "documentos": documentos, 'proposta_investimentos_enviada': proposta_investimentos_enviada})
 
 def add_doc(request, id):
     empresa = Empresas.objects.get(id=id)
