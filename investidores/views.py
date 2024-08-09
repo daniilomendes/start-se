@@ -3,6 +3,7 @@ from empresarios.models import Empresas, Documento, Metricas
 from .models import PropostaInvestimento
 from django.contrib import messages
 from django.contrib.messages import constants
+from django.http import Http404, HttpResponse
 
 def sugestao(request):
     if not request.user.is_authenticated:
@@ -68,3 +69,24 @@ def realizar_proposta(request, id):
 
     pi.save()
     return redirect(f'/investidores/assinar_contrato/{pi.id}')
+
+def assinar_contrato(request, id):
+    pi = PropostaInvestimento.objects.get(id=id)
+
+    if pi.status != 'AS':
+        raise Http404()
+    
+    if request.method == "GET":
+        return render(request, 'assinar_contrato.html', {'pi': pi})
+    elif request.method == "POST":
+        selfie = request.FILES.get('selfie')
+        rg = request.FILES.get('rg')
+
+        pi.selfie = selfie
+        pi.rg = rg
+        pi.status = 'PE'
+
+        pi.save()
+
+        messages.add_message(request, constants.SUCCESS, f'Contrato assinado com sucesso, sua proposta foi enviada a empresa.')
+        return redirect(f'/investidores/ver_empresa/{pi.empresa.id}')
