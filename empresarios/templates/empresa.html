@@ -40,7 +40,7 @@
                         <a href="#" class="sub-fonte">Ver investidores</a>
                     </div>
                     <div class="col-md">
-                        <h2 class="titulo2">0 Captados</h2>
+                        <h2 class="titulo2">{{total_captado}} Captados</h2>
                     </div>
                 </div>
 
@@ -51,9 +51,9 @@
                         <h5>Percentual de equity vendido</h5>
                         <div class="progress">
                             <div class="progress-bar bg-primary"
-                                 style="width: %"></div>
+                                 style="width: {{percentual_vendido}}%"></div>
                             <div class="progress-bar bg-success"
-                                 style="width: %"></div>
+                                 style="width: {{empresa.percentual_equity}}%"></div>
                         </div>
                         <br>
                         <label class="point-white"></label><span>&nbsp&nbsp Percentual total da empresa</span>
@@ -64,7 +64,7 @@
                     </div>
                     <div class="col-md">
                         <h5>Valuation</h5>
-                        <span class="sub-fonte">Atual: 000</span>
+                        <span class="sub-fonte">Atual: {{valuation_atual}}</span>
                         <br>
                         <span class="sub-fonte">Esperado: {{empresa.valuation}}</span>
                     </div>
@@ -160,9 +160,9 @@
                                     </span>
                                 </div>
                                 <div class="col-md">
-                                    <a href="#" class="btn btn-indigo-normal">Aceitar</a>
+                                    <a href="{% url "gerenciar_proposta" pi.id %}?acao=aceitar" class="btn btn-indigo-normal">Aceitar</a>
                                     <br>
-                                    <a href="#" style="margin-top: 5px;" class="btn btn-danger">Negar</a>
+                                    <a href="{% url "gerenciar_proposta" pi.id %}?acao=recusar" style="margin-top: 5px;" class="btn btn-danger">Negar</a>
                                 </div>
                             </div>
                     </div>
